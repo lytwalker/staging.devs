@@ -1,6 +1,7 @@
 var canvas;
 var canvasContext;
 var redShapeX = 50;
+var redSpeedX = 15;
 
 window.onload = function(){
     console.log("window loaded.");
@@ -16,17 +17,29 @@ window.onload = function(){
 }
 
 function moveEverything(){
-    console.log("called moveEverything.");
-    redShapeX += 1;
+    redShapeX += redSpeedX;
+    if(redShapeX > canvas.width || redShapeX < 0){
+        redSpeedX = -redSpeedX;
+    }
 }
 
 function drawEverything(){
-    console.log("called drawEverything.");
+    // background
+    colorRectangle('black',0,0,canvas.width, canvas.height);
+    // paddle
+    colorRectangle('green',0,(canvas.height / 2) - 100,10,200);
+    // ball
+    colorCircle('white',redShapeX,(canvas.height / 2),25);
+}
 
-    canvasContext.fillStyle = 'black';
-    canvasContext.fillRect(0,0,canvas.width, canvas.height);
-    canvasContext.fillStyle = 'green';
-    canvasContext.fillRect(0,(canvas.height / 2) - 100,10,200);
-    canvasContext.fillStyle = 'red';
-    canvasContext.fillRect(redShapeX,150,10,10);
+function colorRectangle(_drawColor,_leftX,_topY,_width,_height) {
+    canvasContext.fillStyle = _drawColor;
+    canvasContext.fillRect(_leftX,_topY,_width, _height);
+}
+
+function colorCircle(_drawColor,_centerX,_centerY,_radius){
+    canvasContext.fillStyle = _drawColor;
+    canvasContext.beginPath();
+    canvasContext.arc(_centerX,_centerY,_radius,0,Math.PI*2,true);
+    canvasContext.fill();
 }
