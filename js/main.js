@@ -1,7 +1,14 @@
 var canvas;
 var canvasContext;
-var redShapeX = 50;
-var redSpeedX = 15;
+var circleX = 50;
+var circleY = 50;
+const CIRCLE_RADIUS = 25;
+var circleSpeedX = 15;
+var circleSpeedY = 4;
+
+var leftBarX = 50;
+var leftBarY = 50;
+const LEFT_BAR_HEIGHT = 200;
 
 window.onload = function(){
     console.log("window loaded.");
@@ -14,22 +21,44 @@ window.onload = function(){
         moveEverything();
         drawEverything();
     }, 1000/fPS);
+
+    canvas.addEventListener('mousemove', function(event){
+        var mousePosition = calculateMousePosition(event);
+        leftBarY = mousePosition.y - (LEFT_BAR_HEIGHT / 2);
+    })
+}
+
+function calculateMousePosition(event) {
+	var rect = canvas.getBoundingClientRect();
+	var root = document.documentElement;
+	var mouseX = event.clientX - rect.left - root.scrollLeft;
+	var mouseY = event.clientY - rect.top - root.scrollTop;
+	return {
+		x:mouseX,
+		y:mouseY
+	};
 }
 
 function moveEverything(){
-    redShapeX += redSpeedX;
-    if(redShapeX > canvas.width || redShapeX < 0){
-        redSpeedX = -redSpeedX;
-    }
+
+    circleX += circleSpeedX;
+    // change direction when carvas x-bourdary is hit
+    if(circleX > canvas.width || circleX < 0)
+        circleSpeedX = -circleSpeedX;
+        
+    // change direction when carvas y-bourdary is hit
+    circleY += circleSpeedY;
+    if(circleY > canvas.height || circleY < 0)
+        circleSpeedY = -circleSpeedY;
 }
 
 function drawEverything(){
     // background
     colorRectangle('black',0,0,canvas.width, canvas.height);
     // paddle
-    colorRectangle('green',0,(canvas.height / 2) - 100,10,200);
+    colorRectangle('green',0,leftBarY,10,LEFT_BAR_HEIGHT);
     // ball
-    colorCircle('white',redShapeX,(canvas.height / 2),25);
+    colorCircle('white',circleX,circleY,CIRCLE_RADIUS);
 }
 
 function colorRectangle(_drawColor,_leftX,_topY,_width,_height) {
