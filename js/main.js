@@ -8,7 +8,13 @@ var circleSpeedY = 4;
 
 var leftBarX = 50;
 var leftBarY = 50;
+const LEFT_BAR_WIDTH = 10;
 const LEFT_BAR_HEIGHT = 200;
+
+var rightBarX = 50;
+var rightBarY = 50;
+const RIGHT_BAR_WIDTH = 10;
+const RIGHT_BAR_HEIGHT = 200;
 
 window.onload = function(){
     console.log("window loaded.");
@@ -39,13 +45,34 @@ function calculateMousePosition(event) {
 	};
 }
 
+function circleRespawn(){
+  // to center of screen
+  circleX = canvas.width/2;
+  circleY = canvas.height/2;
+  circleSpeedX = -circleSpeedX;
+}
+
 function moveEverything(){
 
     circleX += circleSpeedX;
-    // change direction when carvas x-bourdary is hit
-    if(circleX > canvas.width || circleX < 0)
+    // change direction when carvas x-bourdary, and the left & right bars are hit
+    // -- left bar
+    if(circleX < 0){
+      if (circleY > leftBarY && circleY < leftBarY + LEFT_BAR_HEIGHT) {
         circleSpeedX = -circleSpeedX;
-        
+      } else {
+        circleRespawn();
+      }
+    }
+    // -- right bar
+    if(circleX > canvas.width){
+      if (circleY > rightBarY && circleY < rightBarY + RIGHT_BAR_HEIGHT) {
+        circleSpeedX = -circleSpeedX;
+      } else {
+        circleRespawn();
+      }
+    }
+
     // change direction when carvas y-bourdary is hit
     circleY += circleSpeedY;
     if(circleY > canvas.height || circleY < 0)
@@ -55,10 +82,12 @@ function moveEverything(){
 function drawEverything(){
     // background
     colorRectangle('black',0,0,canvas.width, canvas.height);
-    // paddle
-    colorRectangle('green',0,leftBarY,10,LEFT_BAR_HEIGHT);
     // ball
     colorCircle('white',circleX,circleY,CIRCLE_RADIUS);
+    // left bar
+    colorRectangle('green',0,leftBarY,LEFT_BAR_WIDTH,LEFT_BAR_HEIGHT);
+    // right bar
+    colorRectangle('green',canvas.width - RIGHT_BAR_WIDTH,rightBarY,RIGHT_BAR_WIDTH,RIGHT_BAR_HEIGHT);
 }
 
 function colorRectangle(_drawColor,_leftX,_topY,_width,_height) {
